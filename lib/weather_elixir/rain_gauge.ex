@@ -1,9 +1,9 @@
 defmodule WeatherElixir.Rain do
   use Agent
-  alias WeatherElixir.Utils, as: Utils 
+  alias WeatherElixir.Utils, as: Utils
   require Logger
 
-  @rain_bucket 0.2794 
+  @rain_bucket 0.2794
 
   @doc """
   Starts a new agent for the rain gauge
@@ -25,7 +25,7 @@ defmodule WeatherElixir.Rain do
   """
   def reset_agent() do
     st = Utils.ms_until_midnight()
-    Logger.info("Agent state for rain gauge will reset in #{round(st/1000/3600)} hours")
+    Logger.info("Agent state for rain gauge will reset in #{round(st / 1000 / 3600)} hours")
 
     Process.sleep(st)
     Agent.update(:rain, fn _state -> %{count: 0, vol: 0} end)
@@ -39,7 +39,7 @@ defmodule WeatherElixir.Rain do
   Updates rain state by @rain_bucket
   """
   def update() do
-    curr_state  = Agent.get(:rain, fn state -> state end)
+    curr_state = Agent.get(:rain, fn state -> state end)
 
     new_vol = Float.round(curr_state.vol + @rain_bucket, 2)
     new_count = curr_state.count + 1
@@ -47,6 +47,4 @@ defmodule WeatherElixir.Rain do
     Logger.info("Rain bucket holds: #{new_vol}")
     Agent.update(:rain, fn _state -> %{count: new_count, vol: new_vol} end)
   end
-
 end
-
