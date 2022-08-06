@@ -34,8 +34,8 @@ defmodule WeatherElixir.Wind do
     circumference_m = 2 * :math.pi() * @radius_m
     fixed_count = state[:count] / @wind_rotations
     dist_m = circumference_m * fixed_count
-    speed = dist_m / (@wind_interval_ms / 1000)
-    Logger.info("Current wind speed is: #{speed * @anemometer_factor}m/s")
+    speed = dist_m / (@wind_interval_ms / 1000) * @anemometer_factor
+    Logger.info("Current wind speed is: #{speed}m/s")
 
     Agent.update(:wind, fn _state -> Map.put(state, :count, 0) end)
 
