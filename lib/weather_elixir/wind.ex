@@ -2,7 +2,6 @@ defmodule WeatherElixir.Wind do
   use Agent
   require Logger
 
-  @wind_speed 2.4
   @anemometer_factor 1.18
   @wind_interval_ms 5000
   @radius_m 0.09
