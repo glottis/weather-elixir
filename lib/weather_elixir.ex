@@ -10,11 +10,13 @@ defmodule WeatherElixir do
   end
 
   def init(_opts) do
-    {:ok, gpio} = Circuits.GPIO.open(@rain_sensor_pin, :input)
-    {:ok, gpio} = Circuits.GPIO.open(@wind_sensor_pin, :input)
+    {:ok, rain_gpio} = Circuits.GPIO.open(@rain_sensor_pin, :input)
+    {:ok, wind_gpio} = Circuits.GPIO.open(@wind_sensor_pin, :input)
 
-    Circuits.GPIO.set_interrupts(gpio, :falling)
-    {:ok, gpio}
+    Circuits.GPIO.set_interrupts(wind_gpio, :falling)
+    Circuits.GPIO.set_interrupts(rain_gpio, :falling)
+
+    {:ok, {rain_gpio, wind_gpio}}
   end
 
   def handle_info({:circuits_gpio, @rain_sensor_pin, _timestamp, _value}, state) do
