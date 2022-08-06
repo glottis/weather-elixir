@@ -9,7 +9,8 @@ defmodule WeatherElixir.Application do
     children = [
       # Starts a worker by calling: WeatherElixir.Worker.start_link(arg)
       {WeatherElixir, []},
-      {WeatherElixir.Rain, []}
+      {WeatherElixir.Rain, []},
+      {WeatherElixir.Wind, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
