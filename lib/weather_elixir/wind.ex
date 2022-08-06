@@ -49,6 +49,5 @@ defmodule WeatherElixir.Wind do
     curr_state = get()
 
     Agent.update(:wind, fn state -> Map.put(state, :count, curr_state[:count] + 1) end)
-    Logger.info("Wind updated")
   end
 end
