@@ -3,7 +3,7 @@ defmodule WeatherElixir.Wind do
   require Logger
 
   @doc """
-  Starts a new agent for the speed gauge
+  Starts a new agent for the wind speed gauge
   """
   def start_link(_opts) do
     Agent.start_link(fn -> %{count: 0, vol: 0} end, name: :wind)
