@@ -12,6 +12,7 @@ defmodule WeatherElixir.Wind do
   Starts a new agent for the wind speed gauge
   """
   def start_link(_opts) do
+    spawn(fn -> reset_agent() end)
     Agent.start_link(fn -> %{count: 0, max: 0} end, name: :wind)
   end
 
