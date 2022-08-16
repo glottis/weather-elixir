@@ -11,8 +11,8 @@ defmodule WeatherElixir.Wind do
   Starts a new agent for the wind speed gauge
   """
   def start_link(_opts) do
-    spawn(fn -> reset_agent() end)
-    Agent.start_link(fn -> %{count: 0, max: 0} end, name: :wind)
+    spawn(fn -> calc_wind_speed() end)
+    Agent.start_link(fn -> %{count: 0, max: 0, enteries: []} end, name: :wind)
   end
 
   @doc """
@@ -23,9 +23,9 @@ defmodule WeatherElixir.Wind do
   end
 
   @doc """
-  Resets the state of the agent after midnight
+  Calculates current wind speed for a period of @wind_interval_ms in ms
   """
-  def reset_agent() do
+  def calc_wind_speed() do
     Process.sleep(@wind_interval_ms)
 
     state = get()
@@ -33,12 +33,12 @@ defmodule WeatherElixir.Wind do
     circumference_m = 2 * :math.pi() * @radius_m
     fixed_count = state[:count] / @wind_rotations
     dist_m = circumference_m * fixed_count
-    speed = dist_m / (@wind_interval_ms / 1000) * @anemometer_factor
-    Logger.info("Current wind speed is: #{Float.round(speed, 1)}m/s")
+    speed = (dist_m / (@wind_interval_ms / 1000) * @anemometer_factor) |> Float.round(1)
 
-    Agent.update(:wind, fn _state -> Map.put(state, :count, 0) end)
+    Agent.update(:wind, fn state -> %{state | count: 0, entries: [speed | state.entires]} end)
+    Logger.info("Current wind speed is: #{speed}m/s")
 
-    reset_agent()
+    calc_wind_speed()
   end
 
   @doc """
