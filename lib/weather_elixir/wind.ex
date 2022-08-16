@@ -14,7 +14,7 @@ defmodule WeatherElixir.Wind do
   def start_link(_opts) do
     spawn(fn -> calc_wind_speed() end)
     spawn(fn -> calc_avg_wind_speed() end)
-    Agent.start_link(fn -> %{count: 0, max: 0, enteries: []} end, name: :wind)
+    Agent.start_link(fn -> %{count: 0, max: 0, entries: []} end, name: :wind)
   end
 
   @doc """
