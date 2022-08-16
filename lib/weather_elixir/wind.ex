@@ -50,16 +50,28 @@ defmodule WeatherElixir.Wind do
     Process.sleep(@wind_interval_ms)
 
     state = get()
+    count = state[:count]
 
-    circumference_m = 2 * :math.pi() * @radius_m
-    fixed_count = state[:count] / @wind_rotations
-    dist_m = circumference_m * fixed_count
-    speed = (dist_m / (@wind_interval_ms / 1000) * @anemometer_factor) |> Float.round(1)
+    case count > 0 do
+      true ->
+        circumference_m = 2 * :math.pi() * @radius_m
+        fixed_count = state[:count] / @wind_rotations
+        dist_m = circumference_m * fixed_count
+        speed = (dist_m / (@wind_interval_ms / 1000) * @anemometer_factor) |> Float.round(1)
 
-    Agent.update(:wind, fn state -> %{state | count: 0, entries: [speed | state.entires]} end)
-    Logger.info("Current wind speed is: #{speed}m/s")
+        new_max = if speed > state[:max], do: speed, else: state[:max]
 
-    calc_wind_speed()
+        Agent.update(:wind, fn state ->
+          %{state | max: new_max, count: 0, entries: [speed | state.entires]}
+        end)
+
+        Logger.info("Current wind speed is: #{speed}m/s")
+
+        calc_wind_speed()
+
+      false ->
+        calc_wind_speed()
+    end
   end
 
   @doc """
