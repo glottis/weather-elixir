@@ -62,7 +62,7 @@ defmodule WeatherElixir.Wind do
         new_max = if speed > state[:max], do: speed, else: state[:max]
 
         Agent.update(:wind, fn state ->
-          %{state | max: new_max, count: 0, entries: [speed | state.entires]}
+          %{state | max: new_max, count: 0, entries: [speed | state[:entries]]}
         end)
 
         Logger.info("Current wind speed is: #{speed}m/s")
