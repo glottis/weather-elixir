@@ -3,6 +3,7 @@ defmodule WeatherElixir.Wind do
   require Logger
 
   @anemometer_factor 1.18
+  @avg_wind_interval_ms 3_600_000
   @wind_interval_ms 5000
   @radius_m 0.09
   @wind_rotations 2.0
@@ -12,6 +13,7 @@ defmodule WeatherElixir.Wind do
   """
   def start_link(_opts) do
     spawn(fn -> calc_wind_speed() end)
+    spawn(fn -> calc_avg_wind_speed() end)
     Agent.start_link(fn -> %{count: 0, max: 0, enteries: []} end, name: :wind)
   end
 
@@ -23,8 +25,27 @@ defmodule WeatherElixir.Wind do
   end
 
   @doc """
-  Calculates current wind speed for a period of @wind_interval_ms in ms
+  Calculates avg wind speed for a period of @avg_wind_interval_ms in ms
   """
+  def calc_avg_wind_speed() do
+    Process.sleep(@avg_wind_interval_ms)
+
+    state = get()
+    list_len = length(state[:entries])
+
+    case list_len > 0 do
+      true ->
+        avg_wind = Enum.sum(state[:entries]) / list_len
+
+        Agent.update(:wind, fn state -> %{state | entries: []} end)
+        Logger.info("Avg wind speed is: #{avg_wind}m/s")
+        calc_avg_wind_speed()
+
+      _ ->
+        calc_avg_wind_speed()
+    end
+  end
+
   def calc_wind_speed() do
     Process.sleep(@wind_interval_ms)
 
