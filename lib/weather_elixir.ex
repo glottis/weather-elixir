@@ -1,5 +1,6 @@
 defmodule WeatherElixir do
   use GenServer
+  alias Circuits.GPIO
   require Logger
 
   @wind_sensor_pin 5
@@ -10,11 +11,11 @@ defmodule WeatherElixir do
   end
 
   def init(_opts) do
-    {:ok, rain_gpio} = Circuits.GPIO.open(@rain_sensor_pin, :input)
-    {:ok, wind_gpio} = Circuits.GPIO.open(@wind_sensor_pin, :input)
+    {:ok, rain_gpio} = GPIO.open(@rain_sensor_pin, :input)
+    {:ok, wind_gpio} = GPIO.open(@wind_sensor_pin, :input)
 
-    Circuits.GPIO.set_interrupts(wind_gpio, :falling)
-    Circuits.GPIO.set_interrupts(rain_gpio, :falling)
+    GPIO.set_interrupts(wind_gpio, :falling)
+    GPIO.set_interrupts(rain_gpio, :falling)
 
     {:ok, {rain_gpio, wind_gpio}}
   end
