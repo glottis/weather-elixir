@@ -1,12 +1,14 @@
 defmodule WeatherElixir.Wind do
   use Agent
   require Logger
+  alias WeatherElixir.Utils
 
   @anemometer_factor 1.18
   @avg_wind_interval_ms 3_600_000
   @wind_interval_ms 5000
   @radius_m 0.09
   @wind_rotations 2.0
+  @wind_direction_lookup %{0.4 => "NW"}
 
   @doc """
   Starts a new agent for the wind speed gauge
@@ -14,7 +16,7 @@ defmodule WeatherElixir.Wind do
   def start_link(_opts) do
     spawn(fn -> calc_wind_speed() end)
     spawn(fn -> calc_avg_wind_speed() end)
-    Agent.start_link(fn -> %{count: 0, max: 0, entries: []} end, name: :wind)
+    Agent.start_link(fn -> %{count: 0, max: 0, direction: "", entries: []} end, name: :wind)
   end
 
   @doc """
@@ -75,11 +77,20 @@ defmodule WeatherElixir.Wind do
   end
 
   @doc """
-  Updates wind state
+  Updates wind speed state
   """
-  def update() do
+  def update_speed() do
     curr_state = get()
 
     Agent.update(:wind, fn state -> Map.put(state, :count, curr_state[:count] + 1) end)
+  end
+
+  @doc """
+  Updates wind direction state
+  """
+  def update_direction(input) do
+    direction = input |> Utils.convert_volts() |> Utils.lookup_wind_direction()
+
+    Agent.update(:wind, fn state -> Map.put(state, :direction, direction) end)
   end
 end
