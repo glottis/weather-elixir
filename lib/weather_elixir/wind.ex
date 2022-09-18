@@ -8,7 +8,6 @@ defmodule WeatherElixir.Wind do
   @wind_interval_ms 5000
   @radius_m 0.09
   @wind_rotations 2.0
-  @wind_direction_lookup %{0.4 => "NW"}
 
   @doc """
   Starts a new agent for the wind speed gauge
