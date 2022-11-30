@@ -11,6 +11,7 @@ defmodule WeatherElixir.Application do
       {WeatherElixir.Rain, []},
       {WeatherElixir.Wind, []},
       {WeatherElixir.Temperature, []},
+      {WeatherElixir.Wifi, []},
       {WeatherElixir, []}
     ]
 
