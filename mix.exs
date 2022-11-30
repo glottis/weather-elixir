@@ -22,6 +22,7 @@ defmodule WeatherElixir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ds18b20_1w, "~> 0.1.2"},
       {:circuits_spi, "~> 1.3"},
       {:circuits_gpio, "~> 1.0"},
       {:tz, "~> 0.21.1"}

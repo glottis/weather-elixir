@@ -10,6 +10,7 @@ defmodule WeatherElixir.Application do
       # Starts a worker by calling: WeatherElixir.Worker.start_link(arg)
       {WeatherElixir.Rain, []},
       {WeatherElixir.Wind, []},
+      {WeatherElixir.Temperature, []},
       {WeatherElixir, []}
     ]
 
