@@ -8,6 +8,7 @@ defmodule WeatherElixir.Application do
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: WeatherElixir.Worker.start_link(arg)
+      {WeatherElixir.Mqtt, []},
       {WeatherElixir.Rain, []},
       {WeatherElixir.Wind, []},
       {WeatherElixir.Temperature, []},
