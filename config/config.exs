@@ -2,7 +2,7 @@ import Config
 config :tz, reject_time_zone_periods_before_year: 2022
 config :elixir, :time_zone_database, Tz.TimeZoneDatabase
 
-config :WeatherElixir, :emqtt,
+config :weather_elixir, :emqtt,
   host: System.get_env("MQTT_HOST") |> String.to_charlist(),
   port: System.get_env("MQTT_PORT") |> String.to_integer(),
   clientid: System.get_env("MQTT_USER"),
