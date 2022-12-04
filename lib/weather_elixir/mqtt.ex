@@ -6,7 +6,7 @@ defmodule WeatherElixir.Mqtt do
   end
 
   def init([]) do
-    emqtt_opts = Application.get_env(:WeatherElixir, :emqtt)
+    emqtt_opts = Application.get_env(:weather_elixir, :emqtt)
     {:ok, pid} = :emqtt.start_link(emqtt_opts)
 
     st = %{
