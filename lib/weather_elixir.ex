@@ -24,7 +24,7 @@ defmodule WeatherElixir do
   end
 
   defp recv_spi(ref) do
-    :timer.sleep(3000)
+    :timer.sleep(60000)
     {:ok, <<_::size(14), counts::size(10)>>} = SPI.transfer(ref, <<0x01, 0x80, 0x00>>)
     counts |> WeatherElixir.Wind.update_direction()
     recv_spi(ref)
