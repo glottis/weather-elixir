@@ -2,6 +2,10 @@ defmodule WeatherElixir.Wifi do
   require Logger
   use Agent
 
+  alias ElixirSense.Plugins.Util
+  alias WeatherElixir.Utils
+  alias WeatherElixir.Mqtt
+
   @sleep_interval_ms 6_000_000
 
   @doc """
@@ -30,8 +34,11 @@ defmodule WeatherElixir.Wifi do
            |> String.to_charlist()
            |> :os.cmd()
            |> List.to_string()
-           |> String.trim() do
+           |> String.trim()
+           |> String.to_integer() do
       Agent.update(:wifi, fn _state -> %{signal: signal} end)
+
+      Utils.create_mqtt_payload("RSSI", signal, "weather-pi-wifi") |> Mqtt.publish()
 
       Process.sleep(@sleep_interval_ms)
 
