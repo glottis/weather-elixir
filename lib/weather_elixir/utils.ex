@@ -10,7 +10,7 @@ defmodule WeatherElixir.Utils do
     @full_day_ms - abs(Time.diff(~T[00:00:00], t, :millisecond))
   end
 
-  def create_mqtt_payload({key, value, sensor}) do
+  def create_mqtt_payload(key, value, sensor) do
     %{"sensor" => sensor, key => value}
   end
 
