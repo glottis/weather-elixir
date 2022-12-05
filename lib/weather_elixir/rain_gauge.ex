@@ -1,7 +1,9 @@
 defmodule WeatherElixir.Rain do
   use Agent
   require Logger
+
   alias WeatherElixir.Utils
+  alias WeatherElixir.Mqtt
 
   @rain_bucket 0.2794
 
@@ -43,5 +45,7 @@ defmodule WeatherElixir.Rain do
     new_count = curr_state.count + 1
 
     Agent.update(:rain, fn _state -> %{count: new_count, vol: new_vol} end)
+
+    Utils.create_mqtt_payload("Rain", new_vol, "weather-pi-rain") |> Mqtt.publish()
   end
 end
