@@ -1,6 +1,5 @@
 defmodule WeatherElixir.Temperature do
   use Agent
-  require Logger
   require Ds18b20_1w
 
   @temperature_interval_ms 60000
