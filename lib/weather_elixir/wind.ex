@@ -65,7 +65,7 @@ defmodule WeatherElixir.Wind do
           %{state | max: new_max, count: 0, entries: [speed | state[:entries]]}
         end)
 
-        Utils.create_mqtt_payload("Wind-speed", speed, "weather-pi-wind-speed")
+        Utils.create_mqtt_payload("Speed", speed, "weather-pi-wind-speed")
         |> Mqtt.publish()
 
         calc_wind_speed()
@@ -90,9 +90,14 @@ defmodule WeatherElixir.Wind do
   def update_direction(input) do
     direction = input |> Utils.convert_volts() |> Utils.lookup_wind_direction()
 
-    Agent.update(:wind, fn state -> Map.put(state, :direction, direction) end)
+    curr_state = get()
 
-    Utils.create_mqtt_payload("Wind-direction", direction, "weather-pi-wind-direction")
-    |> Mqtt.publish()
+    if curr_state[direction] != direction, do
+      Agent.update(:wind, fn state -> Map.put(state, :direction, direction) end)
+
+      Utils.create_mqtt_payload("Direction", direction, "weather-pi-wind-direction")
+      |> Mqtt.publish()
+    end
+
   end
 end

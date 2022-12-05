@@ -5,7 +5,7 @@ defmodule WeatherElixir.Temperature do
   alias WeatherElixir.Utils
   alias WeatherElixir.Mqtt
 
-  @temperature_interval_ms 60000
+  @temperature_interval_ms 300_000
 
   @doc """
   Starts a new agent for the temperature agent
