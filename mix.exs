@@ -22,6 +22,7 @@ defmodule WeatherElixir.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:jason, "~> 1.4"},
       {:emqtt, github: "emqx/emqtt", tag: "1.4.4", system_env: [{"BUILD_WITHOUT_QUIC", "1"}]},
       {:ds18b20_1w, "~> 0.1.2"},
       {:circuits_spi, "~> 1.3"},
