@@ -2,6 +2,9 @@ defmodule WeatherElixir.Temperature do
   use Agent
   require Ds18b20_1w
 
+  alias WeatherElixir.Utils
+  alias WeatherElixir.Mqtt
+
   @temperature_interval_ms 60000
 
   @doc """
@@ -26,6 +29,8 @@ defmodule WeatherElixir.Temperature do
     [{:ok, _sensor, temp}] = Ds18b20_1w.read_sensors()
 
     Agent.update(:temperature, fn _state -> %{temperature: temp} end)
+
+    Utils.create_mqtt_payload("Temperature", temp, "ds18b20-temperature") |> Mqtt.publish()
 
     Process.sleep(@temperature_interval_ms)
 

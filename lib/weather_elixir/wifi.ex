@@ -2,7 +2,6 @@ defmodule WeatherElixir.Wifi do
   require Logger
   use Agent
 
-  alias ElixirSense.Plugins.Util
   alias WeatherElixir.Utils
   alias WeatherElixir.Mqtt
 
