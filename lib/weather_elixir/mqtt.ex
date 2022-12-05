@@ -9,16 +9,33 @@ defmodule WeatherElixir.Mqtt do
     emqtt_opts = Application.get_env(:weather_elixir, :emqtt)
     {:ok, pid} = :emqtt.start_link(emqtt_opts)
 
-    st = %{
+    state = %{
       pid: pid
     }
 
-    {:ok, _} = :emqtt.connect(pid)
-
-    {:ok, st}
+    {:ok, state, {:continue, :connect}}
   end
 
-  def handle_cast({:publish, data}, st) do
+  def get() do
+    GenServer.call(:mqtt, :get)
+  end
+
+  def publish(data) do
+    json = data |> Jason.encode!()
+    GenServer.cast(:mqtt, {:publish, json, "sensors/" <> data["sensor"] <> "/data"})
+  end
+
+  def handle_continue(:connect, state) do
+    {:ok, _} = :emqtt.connect(state.pid)
+    {:noreply, state}
+  end
+
+  def handle_call(:get, _from, state) do
+    {:reply, state, state}
+  end
+
+  def handle_cast({:publish, payload, topic}, st) do
+    :emqtt.publish(st.pid, topic, payload)
     {:noreply, st}
   end
 end
