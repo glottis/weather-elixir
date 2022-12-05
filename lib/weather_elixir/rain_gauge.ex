@@ -1,5 +1,6 @@
 defmodule WeatherElixir.Rain do
   use Agent
+  require Logger
   alias WeatherElixir.Utils
 
   @rain_bucket 0.2794
