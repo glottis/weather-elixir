@@ -2,7 +2,6 @@ defmodule WeatherElixir do
   use GenServer
   alias Circuits.SPI
   alias Circuits.GPIO
-  require Logger
 
   @wind_sensor_pin 5
   @rain_sensor_pin 6
@@ -32,13 +31,11 @@ defmodule WeatherElixir do
   end
 
   def handle_info({:circuits_gpio, @rain_sensor_pin, _timestamp, _value}, state) do
-    # Logger.info("Sensor triggered from pin: #{@rain_sensor_pin}")
     WeatherElixir.Rain.update()
     {:noreply, state}
   end
 
   def handle_info({:circuits_gpio, @wind_sensor_pin, _timestamp, _value}, state) do
-    # Logger.info("Sensor triggered from pin: #{@wind_sensor_pin}")
     WeatherElixir.Wind.update_speed()
     {:noreply, state}
   end

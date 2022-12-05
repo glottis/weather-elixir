@@ -28,8 +28,6 @@ defmodule WeatherElixir.Temperature do
 
     Agent.update(:temperature, fn _state -> %{temperature: temp} end)
 
-    Logger.info("Current temperature is: #{temp}")
-
     Process.sleep(@temperature_interval_ms)
 
     read_temperature()

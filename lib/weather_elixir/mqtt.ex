@@ -2,7 +2,7 @@ defmodule WeatherElixir.Mqtt do
   use GenServer
 
   def start_link([]) do
-    GenServer.start_link(__MODULE__, [])
+    GenServer.start_link(__MODULE__, [], name: :mqtt)
   end
 
   def init([]) do
@@ -16,5 +16,9 @@ defmodule WeatherElixir.Mqtt do
     {:ok, _} = :emqtt.connect(pid)
 
     {:ok, st}
+  end
+
+  def handle_cast({:publish, data}, st) do
+    {:noreply, st}
   end
 end

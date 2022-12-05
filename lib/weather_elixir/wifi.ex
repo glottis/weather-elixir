@@ -1,6 +1,6 @@
 defmodule WeatherElixir.Wifi do
-  use Agent
   require Logger
+  use Agent
 
   @sleep_interval_ms 6_000_000
 
@@ -32,8 +32,6 @@ defmodule WeatherElixir.Wifi do
            |> List.to_string()
            |> String.trim() do
       Agent.update(:wifi, fn _state -> %{signal: signal} end)
-
-      Logger.info("Current wifi signal is: #{signal}")
 
       Process.sleep(@sleep_interval_ms)
 

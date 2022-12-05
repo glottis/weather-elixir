@@ -1,6 +1,5 @@
 defmodule WeatherElixir.Wind do
   use Agent
-  require Logger
   alias WeatherElixir.Utils
 
   @anemometer_factor 1.18
@@ -39,7 +38,6 @@ defmodule WeatherElixir.Wind do
         avg_wind = Enum.sum(state[:entries]) / list_len
 
         Agent.update(:wind, fn state -> %{state | entries: []} end)
-        Logger.info("Avg wind speed is: #{avg_wind}m/s")
         calc_avg_wind_speed()
 
       _ ->
@@ -65,8 +63,6 @@ defmodule WeatherElixir.Wind do
         Agent.update(:wind, fn state ->
           %{state | max: new_max, count: 0, entries: [speed | state[:entries]]}
         end)
-
-        Logger.info("Current wind speed is: #{speed}m/s")
 
         calc_wind_speed()
 
