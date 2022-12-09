@@ -92,7 +92,7 @@ defmodule WeatherElixir.Wind do
 
     curr_state = get()
 
-    if curr_state[direction] != direction do
+    if curr_state[direction] != direction && direction != "N/A" do
       Agent.update(:wind, fn state -> Map.put(state, :direction, direction) end)
 
       Utils.create_mqtt_payload("Direction", direction, "weather-pi-wind-direction")
