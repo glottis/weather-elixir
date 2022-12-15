@@ -7,13 +7,17 @@ defmodule WeatherElixir.Mqtt do
 
   def init([]) do
     emqtt_opts = Application.get_env(:weather_elixir, :emqtt)
-    {:ok, pid} = :emqtt.start_link(emqtt_opts)
+    with {:ok, pid} <- :emqtt.start_link(emqtt_opts), do
 
-    state = %{
-      pid: pid
-    }
+      state = %{
+        pid: pid
+      }
 
-    {:ok, state, {:continue, :connect}}
+      {:ok, state, {:continue, :connect}}
+    else
+      {_, msg} -> msg
+    end
+
   end
 
   def get() do
@@ -26,8 +30,10 @@ defmodule WeatherElixir.Mqtt do
   end
 
   def handle_continue(:connect, state) do
-    {:ok, _} = :emqtt.connect(state.pid)
-    {:noreply, state}
+    case :emqtt.connect(state.pid) do
+      {:ok, _} -> {:noreply, state}
+      {_, msg} -> msg
+    end
   end
 
   def handle_call(:get, _from, state) do
