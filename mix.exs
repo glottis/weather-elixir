@@ -23,7 +23,7 @@ defmodule WeatherElixir.MixProject do
   defp deps do
     [
       {:jason, "~> 1.4"},
-      {:emqtt, github: "emqx/emqtt", tag: "1.4.4", system_env: [{"BUILD_WITHOUT_QUIC", "1"}]},
+      {:tortoise, "~> 0.10.0"},
       {:ds18b20_1w, "~> 0.1.2"},
       {:circuits_spi, "~> 1.3"},
       {:circuits_gpio, "~> 1.0"},
