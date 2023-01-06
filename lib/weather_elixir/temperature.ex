@@ -28,8 +28,9 @@ defmodule WeatherElixir.Temperature do
 
     Agent.update(:temperature, fn _state -> %{temperature: temp} end)
 
-    payload, topic = Utils.create_mqtt_payload("Temperature", temp, "ds18b20-temperature")
+    {payload, topic} = Utils.create_mqtt_payload("Temperature", temp, "ds18b20-temperature")
     Tortoise.publish(:temp, topic, payload)
+
     Process.sleep(@temperature_interval_ms)
 
     read_temperature()
