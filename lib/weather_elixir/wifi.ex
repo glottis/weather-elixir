@@ -37,7 +37,7 @@ defmodule WeatherElixir.Wifi do
       Agent.update(:wifi, fn _state -> %{signal: signal} end)
 
       {payload, topic} = Utils.create_mqtt_payload("RSSI", signal, "weather-pi-wifi")
-      Tortoise.publish(:wifi, topic, payload)
+      Tortoise.publish("weather-pi", topic, payload)
 
       Process.sleep(@sleep_interval_ms)
 

@@ -32,7 +32,7 @@ defmodule WeatherElixir.Rain do
     Agent.update(:rain, fn _state -> %{count: 0, vol: 0} end)
 
     {payload, topic} = Utils.create_mqtt_payload("Rain", 0, "weather-pi-rain")
-    Tortoise.publish(:rain, topic, payload)
+    Tortoise.publish("weather-pi", topic, payload)
 
     reset_agent()
   end
@@ -49,6 +49,6 @@ defmodule WeatherElixir.Rain do
     Agent.update(:rain, fn _state -> %{count: new_count, vol: new_vol} end)
 
     {payload, topic} = Utils.create_mqtt_payload("Rain", new_vol, "weather-pi-rain")
-    Tortoise.publish(:rain, topic, payload)
+    Tortoise.publish("weather-pi", topic, payload)
   end
 end

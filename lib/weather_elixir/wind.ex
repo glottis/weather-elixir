@@ -65,7 +65,7 @@ defmodule WeatherElixir.Wind do
         end)
 
         {payload, topic} = Utils.create_mqtt_payload("Speed", speed, "weather-pi-wind-speed")
-        Tortoise.publish(:windspeed, topic, payload)
+        Tortoise.publish("weather-pi", topic, payload)
         calc_wind_speed()
 
       false ->
@@ -96,7 +96,7 @@ defmodule WeatherElixir.Wind do
       {payload, topic} =
         Utils.create_mqtt_payload("Direction", direction, "weather-pi-wind-direction")
 
-      Tortoise.publish(:winddir, topic, payload)
+      Tortoise.publish("weather-pi", topic, payload)
     end
   end
 end
