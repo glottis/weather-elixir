@@ -29,9 +29,10 @@ defmodule WeatherElixir.Rain do
     Logger.info("Agent state for rain gauge will reset in #{round(st / 1000 / 3600)} hours")
 
     Process.sleep(st)
-    Utils.create_mqtt_payload("Rain", 0, "weather-pi-rain") |> Mqtt.publish()
-
     Agent.update(:rain, fn _state -> %{count: 0, vol: 0} end)
+
+    payload, topic = Utils.create_mqtt_payload("Rain", 0, "weather-pi-rain")
+    Tortoise.publish(:rain, topic, payload)
 
     reset_agent()
   end
