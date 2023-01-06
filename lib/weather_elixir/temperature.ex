@@ -3,8 +3,6 @@ defmodule WeatherElixir.Temperature do
   require Ds18b20_1w
 
   alias WeatherElixir.Utils
-  alias WeatherElixir.Mqtt
-
   @temperature_interval_ms 300_000
 
   @doc """
@@ -30,8 +28,8 @@ defmodule WeatherElixir.Temperature do
 
     Agent.update(:temperature, fn _state -> %{temperature: temp} end)
 
-    Utils.create_mqtt_payload("Temperature", temp, "ds18b20-temperature") |> Mqtt.publish()
-
+    payload, topic = Utils.create_mqtt_payload("Temperature", temp, "ds18b20-temperature")
+    Tortoise.publish(:temp, topic, payload)
     Process.sleep(@temperature_interval_ms)
 
     read_temperature()

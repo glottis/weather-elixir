@@ -3,7 +3,6 @@ defmodule WeatherElixir.Wifi do
   use Agent
 
   alias WeatherElixir.Utils
-  alias WeatherElixir.Mqtt
 
   @sleep_interval_ms 6_000_000
 
@@ -37,7 +36,8 @@ defmodule WeatherElixir.Wifi do
            |> String.to_integer() do
       Agent.update(:wifi, fn _state -> %{signal: signal} end)
 
-      Utils.create_mqtt_payload("RSSI", signal, "weather-pi-wifi") |> Mqtt.publish()
+      payload, topic = Utils.create_mqtt_payload("RSSI", signal, "weather-pi-wifi")
+      Tortoise.publish(:wifi, topic, payload)
 
       Process.sleep(@sleep_interval_ms)
 

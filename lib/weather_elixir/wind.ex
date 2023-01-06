@@ -1,7 +1,6 @@
 defmodule WeatherElixir.Wind do
   use Agent
   alias WeatherElixir.Utils
-  alias WeatherElixir.Mqtt
 
   @anemometer_factor 1.18
   @avg_wind_interval_ms 3_600_000
@@ -65,9 +64,8 @@ defmodule WeatherElixir.Wind do
           %{state | max: new_max, count: 0, entries: [speed | state[:entries]]}
         end)
 
-        Utils.create_mqtt_payload("Speed", speed, "weather-pi-wind-speed")
-        |> Mqtt.publish()
-
+        payload, topic = Utils.create_mqtt_payload("Speed", speed, "weather-pi-wind-speed")
+        Tortoise.publish(:windspeed, topic, payload)
         calc_wind_speed()
 
       false ->
@@ -95,8 +93,8 @@ defmodule WeatherElixir.Wind do
     if curr_state[direction] != direction && direction != "N/A" do
       Agent.update(:wind, fn state -> Map.put(state, :direction, direction) end)
 
-      Utils.create_mqtt_payload("Direction", direction, "weather-pi-wind-direction")
-      |> Mqtt.publish()
+      payload, topic = Utils.create_mqtt_payload("Direction", direction, "weather-pi-wind-direction")
+      Tortoise.publish(:winddir, topic, payload)
     end
   end
 end

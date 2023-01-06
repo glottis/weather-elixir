@@ -11,7 +11,7 @@ defmodule WeatherElixir.Utils do
   end
 
   def create_mqtt_payload(key, value, sensor) do
-    %{"sensor" => sensor, key => value}
+    {%{"sensor" => sensor, key => value} |> Jason.encode!(), "sensors/" <> sensor <> "/data"}
   end
 
   @doc """
