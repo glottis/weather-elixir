@@ -1,46 +1,48 @@
 defmodule WeatherElixir.Mqtt do
-  use GenServer
+  require Logger
 
-  def start_link([]) do
-    GenServer.start_link(__MODULE__, [], name: :mqtt)
+  def child_spec(opts \\ []) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [opts]},
+      shutdown: 5_000,
+      restart: :permanent,
+      type: :worker
+    }
   end
 
-  def init([]) do
-    emqtt_opts = Application.get_env(:weather_elixir, :emqtt)
-
-    with {:ok, pid} <- :emqtt.start_link(emqtt_opts) do
-      state = %{
-        pid: pid
-      }
-
-      {:ok, state, {:continue, :connect}}
-    else
-      {_, msg} -> msg
-    end
+  def start_link(opts) do
+    pid = spawn_link(__MODULE__, :init, [opts])
+    Process.register(pid, :mqtt)
+    {:ok, pid}
   end
 
-  def get() do
-    GenServer.call(:mqtt, :get)
+  def init(_opts) do
+    reader()
   end
 
   def publish(data) do
-    json = data |> Jason.encode!()
-    GenServer.cast(:mqtt, {:publish, json, "sensors/" <> data["sensor"] <> "/data"})
+    send(:mqtt, {:pub, data})
   end
 
-  def handle_continue(:connect, state) do
-    case :emqtt.connect(state.pid) do
-      {:ok, _} -> {:noreply, state}
-      {_, msg} -> msg
+  def check do
+    pid = Process.whereis(:mqtt)
+    Process.info(pid, :message_queue_len)
+  end
+
+  def reader do
+    receive do
+      {:pub, payload} ->
+        topic = payload["sensor"] <> "/data"
+        json = payload |> Jason.encode!()
+
+        System.cmd("mosquitto_pub", ["--topic", topic, "--message", json])
+
+        reader()
+
+      msg ->
+        Logger.info("Got #{msg}, wont do anything about it")
+        reader()
     end
-  end
-
-  def handle_call(:get, _from, state) do
-    {:reply, state, state}
-  end
-
-  def handle_cast({:publish, payload, topic}, st) do
-    :emqtt.publish(st.pid, topic, payload)
-    {:noreply, st}
   end
 end
