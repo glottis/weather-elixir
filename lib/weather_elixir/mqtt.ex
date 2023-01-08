@@ -33,7 +33,7 @@ defmodule WeatherElixir.Mqtt do
   def reader do
     receive do
       {:pub, payload} ->
-        topic = payload["sensor"] <> "/data"
+        topic = "sensors/" <> data["sensor"] <> "/data"
         json = payload |> Jason.encode!()
 
         System.cmd("mosquitto_pub", ["--topic", topic, "--message", json])
