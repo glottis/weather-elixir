@@ -2,6 +2,7 @@ defmodule WeatherElixir.Wind do
   use Agent
   alias WeatherElixir.Utils
 
+  @avg_wind_interval_ms 3_600_000
   @wind_interval_ms 5000
   @wind_speed_m_s_second 0.67
 
