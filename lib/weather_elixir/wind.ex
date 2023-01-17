@@ -2,11 +2,8 @@ defmodule WeatherElixir.Wind do
   use Agent
   alias WeatherElixir.Utils
 
-  @anemometer_factor 1.18
-  @avg_wind_interval_ms 3_600_000
   @wind_interval_ms 5000
-  @radius_m 0.09
-  @wind_rotations 2.0
+  @wind_speed_m_s_second 0.67
 
   @doc """
   Starts a new agent for the wind speed gauge
@@ -53,10 +50,9 @@ defmodule WeatherElixir.Wind do
 
     case count > 0 do
       true ->
-        circumference_m = 2 * :math.pi() * @radius_m
-        fixed_count = state[:count] / @wind_rotations
-        dist_m = circumference_m * fixed_count
-        speed = (dist_m / (@wind_interval_ms / 1000) * @anemometer_factor) |> Float.round(1)
+        speed =
+          (count * @wind_speed_m_s_second / (@wind_interval_ms / 1000))
+          |> Float.round(1)
 
         new_max = if speed > state[:max], do: speed, else: state[:max]
 
