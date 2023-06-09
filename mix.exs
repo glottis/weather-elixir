@@ -27,7 +27,8 @@ defmodule WeatherElixir.MixProject do
       {:ds18b20_1w, "~> 0.1.2"},
       {:circuits_spi, "~> 1.3"},
       {:circuits_gpio, "~> 1.0"},
-      {:tz, "~> 0.21.1"}
+      {:tz, "~> 0.21.1"},
+      {:extrace, "~> 0.5.0"}
     ]
   end
 end
