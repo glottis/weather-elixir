@@ -55,6 +55,7 @@ defmodule WeatherElixir.Wind do
           (count * @wind_speed_m_s_second / (@wind_interval_ms / 1000))
           |> Float.round(1)
 
+        speed = if speed > 30, do: 0, else: speed
         new_max = if speed > state[:max], do: speed, else: state[:max]
 
         Agent.update(:wind, fn state ->
