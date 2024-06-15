@@ -1,5 +1,6 @@
 defmodule WeatherElixir do
   use GenServer
+  require Logger
   alias Circuits.SPI
   alias Circuits.GPIO
 
@@ -12,7 +13,9 @@ defmodule WeatherElixir do
 
   def init(_opts) do
     {:ok, rain_gpio} = GPIO.open(@rain_sensor_pin, :input)
+    :ok  = GPIO.set_pull_mode(rain_gpio, :pullup)
     {:ok, wind_gpio} = GPIO.open(@wind_sensor_pin, :input)
+    :ok  = GPIO.set_pull_mode(wind_gpio, :pullup)
     {:ok, spi_ref} = SPI.open("spidev0.0")
 
     spawn(fn -> recv_spi(spi_ref) end)
@@ -37,6 +40,11 @@ defmodule WeatherElixir do
 
   def handle_info({:circuits_gpio, @wind_sensor_pin, _timestamp, _value}, state) do
     WeatherElixir.Wind.update_speed()
+    {:noreply, state}
+  end
+
+  def handle_info({:circuits_gpio, pin, _timestamp, value}, state) do
+    Logger.info("value #{value} for pin #{pin}")
     {:noreply, state}
   end
 end
