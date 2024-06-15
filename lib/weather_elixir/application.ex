@@ -13,14 +13,14 @@ defmodule WeatherElixir.Application do
          client_id: System.fetch_env!("MQTT_USER"),
          user_name: System.fetch_env!("MQTT_USER"),
          password: System.fetch_env!("MQTT_USER_PW"),
+         handler: {Tortoise.Handler.Logger, []},
          server:
            {Tortoise.Transport.SSL,
             host: System.fetch_env!("MQTT_HOST") |> String.to_charlist(),
             port: System.fetch_env!("MQTT_PORT") |> String.to_integer(),
             cacertfile: System.fetch_env!("CACERT"),
-            server_name_indication: System.fetch_env!("MQTT_SNI") |> String.to_charlist(),
-            handler: {Tortoise.Handler.Logger, []}}
-       ]},
+            server_name_indication: System.fetch_env!("MQTT_SNI") |> String.to_charlist()
+       }]},
       {WeatherElixir.Rain, []},
       {WeatherElixir.Wind, []},
       {WeatherElixir.Temperature, []},
