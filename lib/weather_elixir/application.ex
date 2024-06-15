@@ -10,16 +10,16 @@ defmodule WeatherElixir.Application do
       # Starts a worker by calling: WeatherElixir.Worker.start_link(arg)
       {Tortoise.Connection,
        [
-         client_id: Application.get_env(:weather_elixir, :clientid),
-         user_name: Application.get_env(:weather_elixir, :username),
-         password: Application.get_env(:weather_elixir, :password),
+         client_id: System.fetch_env!("MQTT_USER"),
+         user_name: System.fetch_env!("MQTT_USER"),
+         password: System.fetch_env!("MQTT_USER_PW"),
          server:
            {Tortoise.Transport.SSL,
-            host: Application.get_env(:weather_elixir, :host),
-            port: Application.get_env(:weather_elixir, :port),
-            cacertfile: Application.get_env(:weather_elixir, :ca),
-            server_name_indication: Application.get_env(:weather_elixir, :sni)},
-         handler: {Tortoise.Handler.Logger, []}
+            host: System.fetch_env!("MQTT_HOST") |> String.to_charlist(),
+            port: System.fetch_env!("MQTT_PORT") |> String.to_integer(),
+            cacertfile: System.fetch_env!("CACERT"),
+            server_name_indication: System.fetch_env!("MQTT_SNI") |> String.to_charlist(),
+            handler: {Tortoise.Handler.Logger, []}}
        ]},
       {WeatherElixir.Rain, []},
       {WeatherElixir.Wind, []},
