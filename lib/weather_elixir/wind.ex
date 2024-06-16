@@ -13,7 +13,7 @@ defmodule WeatherElixir.Wind do
   """
   def start_link(_opts) do
     spawn(fn -> calc_wind_speed() end)
-    Agent.start_link(fn -> %{count: 0, max: 0, direction: "", entries: []} end, name: :wind)
+    Agent.start_link(fn -> %{count: 0, max: 0, direction: ""} end, name: :wind)
   end
 
   @doc """
@@ -39,7 +39,7 @@ defmodule WeatherElixir.Wind do
         new_max = if speed > state[:max], do: speed, else: state[:max]
 
         Agent.update(:wind, fn state ->
-          %{state | max: new_max, count: 0, entries: [speed | state[:entries]]}
+          %{state | max: new_max, count: 0}
         end)
 
         {payload, topic} = Utils.create_mqtt_payload("Speed", speed, "weather-pi-wind-speed")
