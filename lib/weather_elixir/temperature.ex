@@ -24,13 +24,18 @@ defmodule WeatherElixir.Temperature do
   Reads the temperature sensor(s) and stores them into the agent
   """
   def read_temperature() do
-    [{:ok, _sensor, temp}] = Ds18b20_1w.read_sensors()
+    Ds18b20_1w.read_sensors()
+    |> Enum.map(fn {:ok, mac, temp} ->
+      {"ds18b20-temperature" <> mac, temp}
+    end)
+    |> Enum.map(fn {sensor, temp} ->
+      {payload, topic} = Utils.create_mqtt_payload("Temperature", temp, sensor)
+    end)
+    |> Enum.each(fn {payload, topic} ->
+      Tortoise.publish("weather-pi", topic, payload)
+    end)
 
-    Agent.update(:temperature, fn _state -> %{temperature: temp} end)
-
-    {payload, topic} = Utils.create_mqtt_payload("Temperature", temp, "ds18b20-temperature")
-    Tortoise.publish("weather-pi", topic, payload)
-
+    # Agent.update(:temperature, fn _state -> %{temperature: temp} end)
     Process.sleep(@temperature_interval_ms)
 
     read_temperature()
