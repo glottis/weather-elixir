@@ -26,7 +26,7 @@ defmodule WeatherElixir.Temperature do
   def read_temperature() do
     Ds18b20_1w.read_sensors()
     |> Enum.map(fn {:ok, mac, temp} ->
-      {"ds18b20-temperature" <> mac, temp}
+      {"ds18b20-temperature-" <> mac, temp}
     end)
     |> Enum.map(fn {sensor, temp} ->
       {payload, topic} = Utils.create_mqtt_payload("Temperature", temp, sensor)
